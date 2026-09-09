@@ -1,0 +1,26 @@
+{
+  "name": "render-ping-bot",
+  "version": "1.0.0",
+  "description": "Telegram bot for monitoring static and web services on Render",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "keywords": [
+    "telegram",
+    "bot",
+    "uptime",
+    "ping",
+    "render"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.7.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "mongoose": "^8.5.0",
+    "telegraf": "^4.16.3"
+  }
+}
