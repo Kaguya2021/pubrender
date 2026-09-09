@@ -1,0 +1,11 @@
+# Исключаем переменные окружения (секреты)
+.env
+.env.local
+
+# Исключаем установленные модули
+node_modules/
+
+# Логи и временные файлы
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
