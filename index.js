@@ -1,11 +1,19 @@
 require('dotenv').config();
 const { Telegraf, Markup } = require('telegraf');
 const axios = require('axios');
+const express = require('express');
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
 // Изолированное хранилище в памяти: userId -> Array of { url, name, status, lastChecked }
 const userServices = new Map();
+
+// Сервер для Render (чтобы статус был LIVE)
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+app.get('/', (req, res) => res.send('Bot is running!'));
+app.listen(PORT, () => console.log(`Server listening on port ${PORT}`));
 
 // Функция для нормализации и валидации URL
 function parseUrl(input) {
@@ -136,14 +144,13 @@ bot.on('text', async (ctx) => {
   const text = ctx.message.text.trim();
   const userId = ctx.from.id;
 
-  // Игнорируем команды меню
   if (['➕ Добавить сервис', '📋 Мои сервисы', '🔄 Проверить все', 'ℹ️ Помощь'].includes(text)) {
     return;
   }
 
   const validUrl = parseUrl(text);
   if (!validUrl) {
-    return ctx.reply('❌ Неверный формат URL. Попробуйте отправить ссылку заново (например, `example.com` или `https://api.site.com`).', {
+    return ctx.reply('❌ Неверный формат URL. Попробуйте отправить ссылку заново.', {
       parse_mode: 'Markdown'
     });
   }
@@ -154,7 +161,6 @@ bot.on('text', async (ctx) => {
 
   const userList = userServices.get(userId);
 
-  // Проверка на дубликат у конкретного пользователя
   if (userList.some(s => s.url === validUrl)) {
     return ctx.reply('⚠️ Этот сервис уже есть в вашем списке!');
   }
@@ -216,15 +222,6 @@ bot.action(/^del_(\d+)$/, (ctx) => {
 // Запуск бота
 bot.launch().then(() => {
   console.log('🚀 Pingo Bot успешно запущен!');
-});
-
-// Чтобы Render сразу увидел открытый порт (если это Web Service):
-const express = require('express');
-const app = express();
-const PORT = process.env.PORT || 3000;
-
-app.get('/', (req, res) => res.send('Bot is running!'));
-app.listen(PORT, () => console.log(`Server listening on port ${PORT}`));
 });
 
 // Плавная остановка
