@@ -218,6 +218,15 @@ bot.launch().then(() => {
   console.log('🚀 Pingo Bot успешно запущен!');
 });
 
+// Чтобы Render сразу увидел открытый порт (если это Web Service):
+const express = require('express');
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+app.get('/', (req, res) => res.send('Bot is running!'));
+app.listen(PORT, () => console.log(`Server listening on port ${PORT}`));
+});
+
 // Плавная остановка
 process.once('SIGINT', () => bot.stop('SIGINT'));
 process.once('SIGTERM', () => bot.stop('SIGTERM'));
